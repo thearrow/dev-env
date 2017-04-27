@@ -13,17 +13,17 @@ sudo apt-get -q update
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 
 # git, utils
-sudo apt-get install -y -q git unzip python-software-properties htop ncdu iotop nload
+sudo apt-get install -y -qq git unzip python-software-properties htop ncdu iotop nload
 
 # python 3
-sudo apt-get install -y -q python3-pip
+sudo apt-get install -y -qq python3-pip
 
 # ruby
-sudo apt-get install -y -q ruby-full
+sudo apt-get install -y -qq ruby-full
 
 # kubectl
 echo "downloading kubectl..."
-curl --silent -LO https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl
+wget --quiet https://storage.googleapis.com/kubernetes-release/release/v$KUBERNETES_VERSION/bin/linux/amd64/kubectl
 chmod +x ./kubectl
 mv ./kubectl /usr/local/bin/kubectl
 echo "source <(kubectl completion bash)" >> ~/.bashrc
@@ -39,18 +39,20 @@ echo "downloading helm..."
 wget --quiet https://storage.googleapis.com/kubernetes-helm/helm-v$HELM_VERSION-linux-amd64.tar.gz
 tar -zxvf helm-v$HELM_VERSION-linux-amd64.tar.gz
 mv linux-amd64/helm /usr/local/bin/helm
+sudo rm -rf linux-amd64
+sudo rm -f helm*.tar.gz
 
 # terraform
 echo "downloading terraform..."
 wget --quiet https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-unzip terraform_$TERRAFORM_VERSION_linux_amd64.zip
+unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 mv ./terraform /usr/local/bin/terraform
 rm terraform*.zip
 
 # packer
 echo "downloading packer..."
 wget --quiet https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip
-unzip packer_$PACKER_VERSION_linux_amd64.zip
+unzip packer_${PACKER_VERSION}_linux_amd64.zip
 mv ./packer /usr/local/bin/packer
 rm packer*.zip
 
@@ -84,6 +86,11 @@ chmod +x /usr/local/bin/docker-compose
 curl --silent -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
 sudo apt-get install -y -q nodejs
 
+# yarn
+curl --silent -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install -y -qq yarn
+
 
 # print versions
 kubectl version
@@ -94,3 +101,4 @@ docker version
 docker-compose version
 node -v
 npm -v
+yarn --version
