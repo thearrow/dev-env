@@ -7,6 +7,7 @@ TERRAFORM_VERSION=0.9.4
 PACKER_VERSION=1.0.0
 DOCKER_VERSION=17.03.1
 DOCKER_COMPOSE_VERSION=1.13.0-rc1
+YARN_VERSION=0.23.2
 
 
 sudo apt-get -q update
@@ -89,16 +90,19 @@ sudo apt-get install -y -q nodejs
 # yarn
 curl --silent -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install -y -qq yarn
+sudo apt-get update && sudo apt-get install -y -qq yarn=${YARN_VERSION}-1
 
 
 # print versions
+git version
 kubectl version
+echo "kops: $(kops version)"
+helm version
 aws --version
 terraform version
 packer version
-docker version
+sudo docker version
 docker-compose version
-node -v
-npm -v
-yarn --version
+echo "NodeJS: $(node -v)"
+echo "npm: $(npm -v)"
+echo "Yarn: $(yarn --version)"
